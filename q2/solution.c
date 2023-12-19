@@ -6,41 +6,40 @@
  * };
  */
 
-struct ListNode* addTwo(struct ListNode* l1, struct ListNode* l2, int carryOn);
-struct ListNode* addTwoNum(struct ListNode* l1, struct ListNode* l2, int carryOn);
-
+/* improved and iterative version taken from solutions */
 struct ListNode* addTwoNumbers(struct ListNode* l1, struct ListNode* l2) {
-    return addTwoNum(l1, l2, 0);
-}
 
-/* recursive function that performs addition of two singly linked lists */
-struct ListNode* addTwoNum(struct ListNode* l1, struct ListNode* l2, int carryOn) {
+    // step 1 & 2
+    struct ListNode* head = NULL;
+    struct ListNode* tail = NULL; 
 
-    struct ListNode* carry = NULL;
-    if (carryOn) {
-        carry = malloc(sizeof(struct ListNode));
-        carry -> val = 1; 
-        carry -> next = NULL;
+    // step 3 & 4 & 5
+    int carry = 0, sum, digit1, digit2; 
+    while (l1 || l2 || carry) {
+
+        digit1 = l1 ? l1 -> val : 0;
+        digit2 = l2 ? l2 -> val : 0;
+        sum = digit1 + digit2 + carry; 
+
+        struct ListNode* cur = malloc(sizeof(struct ListNode));
+        cur -> val = sum % 10; 
+        cur -> next = NULL; 
+        
+        // first addition 
+        if (!tail) {
+            head = cur; 
+            tail = cur; 
+        }
+        else {
+            tail -> next = cur; 
+            tail = tail -> next; 
+        } 
+
+        // reset values for next iteration 
+        carry = sum >= 10; 
+        l1 = l1 ? l1 -> next : NULL;
+        l2 = l2 ? l2 -> next : NULL;
     }
 
-    // base cases
-    if (!l1 && !l2) return carry;
-    if (!l1) return addTwoNum(l2, carry, 0);
-    if (!l2) return addTwoNum(l1, carry, 0); 
-
-    // addition performed here
-    struct ListNode* added = addTwo(l1, l2, carryOn);
-    added -> next = addTwoNum(l1 -> next, l2 -> next, l1 -> val + l2 -> val + carryOn > 9);
-
-    return added; 
-}
-
-/* function that performs the addition of two single nodes */
-struct ListNode* addTwo(struct ListNode* l1, struct ListNode* l2, int carryOn) {
-
-    struct ListNode* added = malloc(sizeof(struct ListNode));
-    added -> val = (l1 -> val + l2 -> val + carryOn) % 10;
-    added -> next = NULL; 
-
-    return added;
+    return head; 
 }
