@@ -5,7 +5,6 @@ class Solution:
 
         char_dict = defaultdict(lambda: -1)
         
-        max_start = 0
         max_length = 0
         cur_start = 0
 
@@ -23,7 +22,6 @@ class Solution:
 
             # current string observed is the maximum length
             if i - cur_start + 1 > max_length:
-                max_start = cur_start
                 max_length = i - cur_start + 1
                 
         return max_length
