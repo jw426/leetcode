@@ -2,10 +2,7 @@
 #include <limits.h>
 #include <stdio.h>
 
-double med(int* nums, int n) {
-
-    return nums[n/2];
-}
+#define DEBUG 1
 
 void print_array(int* nums, int n) {
     for (int i = 0; i<n; i++) {
@@ -16,23 +13,46 @@ void print_array(int* nums, int n) {
 
 double _findMedianSortedArrays(int* nums1, int m, int* nums2, int n) {
     
+    #if DEBUG
     printf("%d, %d\n", m, n);
     print_array(nums1, m);
     print_array(nums2, n);
-    // base case
-    if (m==1 && n==1) return fmax(nums1[0], nums2[0]);
-    if (m<=0) return med(nums2, n);
-    if (n<=0) return med(nums1, m);
+    #endif
+    if (m > n) _findMedianSortedArrays(nums2, n, nums1, m);
 
-    // case when m+n is odd
+    int total_cnt = (m+n)/2; // need total_cnt elements in 
+    int cur_cnt = 0; 
+    while (cur_cnt < total_cnt) {
+        
+        int sm_idx = m/2; 
+        int res_idx = total_cnt - cur_cnt - m/2 - 1;
+        printf("%d, %d\n", sm_idx, res_idx);
 
-    if (nums1[m/2] < nums2[n/2]) {
-        return _findMedianSortedArrays(nums1+m/2, m-m/2, nums2, n/2); 
-    } else if (nums1[m/2] > nums2[n/2]) {
-        return _findMedianSortedArrays(nums1, m/2, nums2+n/2, n-n/2);
-    } else {
-        return fmax(nums1[m/2], nums2[n/2]);
+        while (nums1[sm_idx] < nums2[res_idx]) {
+            res_idx /= 2;
+            if (res_idx == 0) break;
+        }
+
+        if (res_idx == 0) {
+            cur_cnt += m/2 + 1; 
+            nums1 += m/2 + 1; 
+            m -= m/2 + 1; 
+        }
+
+        if (cur_cnt == total_cnt) {
+            int n1 = m > 0 ? nums1[0] : INT_MAX;
+            int n2 = n > 0 ? nums2[0] : INT_MAX;
+            return fmin(n1, n2);
+        }
+
+        if (cur_cnt + res_idx + 1 < total_cnt) {
+            nums2 += res_idx + 1;
+            n -= res_idx + 1; 
+            cur_cnt += res_idx + 1; 
+        }        
     }
+
+    return -1;
 
 }
 
@@ -52,7 +72,9 @@ double findMedianSortedArrays(int* nums1, int m, int* nums2, int n) {
     if (max1 < max2) ans2 = _findMedianSortedArrays(nums1, m, nums2, n-1);
     else ans2 = _findMedianSortedArrays(nums1, m-1, nums2, n);
 
-    printf("ans1: %f and ans2: %f\n", ans1, ans2);    
+    #if DEBUG
+    printf("ans1: %f and ans2: %f\n", ans1, ans2);   
+    #endif 
     return (ans1 + ans2) / 2;
 }
 
