@@ -1,24 +1,41 @@
 class Solution:
 
-    roman_dict = {1000: 'M', 500: 'D', 100: 'C', 50: 'L', 10: 'X', 5: 'V', 1: 'I'}
+    roman_conv = {'I': 'X', 'X': 'C', 'C': 'M', 'V': 'L', 'L': 'D'}
+
+    # takes in roman characters
+    # returns roman characters if original was multiplied by 10
+    def multRoman(self, roman: str) -> str:
+
+        new_roman = ""
+        for ch in roman: 
+            new_roman += self.roman_conv[ch]
+        
+        return new_roman
     
+    # converts one-digit integer to roman character
+    def singleIntToRoman(self, num: int) -> str:
+        roman_valsym = [(5, 'V'), (1, 'I')]
+
+        if num == 4: 
+            return "IV"
+        elif num == 9:
+            return "IX"
+        
+        roman = ""
+        for val, sym in roman_valsym:
+            while num - val >= 0:
+                roman += sym
+                num -= val 
+        
+        return roman
+
     def intToRoman(self, num: int) -> str:
     
         roman = ""
-    
-        for val, sym in self.roman_dict.items():
-            temp = ""
-            exp = 0
-            # appending roman characters naively
-            while num - val >= 0:
-                temp += sym
-                num -= val
+        for n in str(num):
+            roman = self.multRoman(roman)
+            roman += self.singleIntToRoman(int(n))
             
-            # collapsing roman chars 
-            if len(temp) == 4:
-                temp = sym + self.roman_dict[5*val]
-            
-            roman += temp
         return roman
 
 
