@@ -1,27 +1,25 @@
 class Solution(object):
 
-    conv = {2: "abc", 3: "def", 4: "ghi", 5: "jkl", 6: "mno", 7: "pqrs", 8: "tuv", 9: "wxyz"}
+    conv = {'2': "abc", '3': "def", '4': "ghi", '5': "jkl", '6': "mno", '7': "pqrs", '8': "tuv", '9': "wxyz"}
     def letterCombinations(self, digits):
         """
         :type digits: str
         :rtype: List[str]
         """
+        if digits == "":
+            return []
 
-        # base case
-        if digits <= 1: 
-            return [""]
+        combs = ['']
+        for num in digits:
+            temp = []
+            for prev in combs: 
+                for ch in self.conv[num]:
+                    temp.append(prev + ch)
+            
+            combs = temp
         
-        prev = self.letterCombinations(int(digits/10))
-        curr = []
-        for ch in self.conv[digits % 10]:
-            for p_ch in prev:
-                curr.append(p_ch + ch)
-        
-        return curr
-
-obj = Solution()
-print(obj.letterCombinations(0))
-    
+        return combs
+            
 
 
 
