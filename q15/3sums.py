@@ -1,4 +1,5 @@
 from bisect import bisect_left
+from collections import defaultdict
 
 class Solution(object):
 
@@ -14,9 +15,16 @@ class Solution(object):
         :rtype: List[List[int]]
         """
 
+        klst = defaultdict(int)
         sumlst = []
 
-        # nums is now sorted 
+        for i in nums:
+            klst[i] += 1
+        
+        nums = []
+        for key, val in klst.items():
+            nums += [key] * min(3, val)
+
         nums.sort()
 
         # add two numbers in array
