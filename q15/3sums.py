@@ -18,33 +18,27 @@ class Solution(object):
         klst = defaultdict(int)
         sumlst = []
 
+        # storing the occurrences of numbers in dictionary
         for i in nums:
             klst[i] += 1
-        
-        nums = []
-        for key, val in klst.items():
-            nums += [key] * min(3, val)
 
-        nums.sort()
+        totlst = list(klst.items())
 
-        # add two numbers in array
-        # find if number needed to make 0 is in the array
-        total = len(nums)
-        for a1 in range(0, total):
-            for a2 in range(a1 + 1, total):
-                need = -(nums[a1] + nums[a2])
-
-                # binary search of needed number
-                idx = self.bsearch(nums, need)
-                
-                # add all repeat occurrences of needed number
-                if idx != -1:
-                    while idx < total and nums[idx] == need:
-                        if idx > a2 and [nums[a1], nums[a2], nums[idx]] not in sumlst:
-                            sumlst.append([nums[a1], nums[a2], nums[idx]])
-                                
-                        idx += 1
-        
+        for i in range(len(totlst)):
+            key, val = totlst[i]
+            
+            for j in range(i+1, len(totlst)):
+                key2, _ = totlst[j]
+                klst[key] -= 1
+                klst[key2] -= 1
+                if klst[-(key + key2)] > 0:
+                    add = sorted([key, key2, -(key + key2)])
+                    if add not in sumlst: 
+                        sumlst.append(add)
+                    
+                klst[key] += 1
+                klst[key2] += 1
+                    
         return sumlst 
 
 obj = Solution()
