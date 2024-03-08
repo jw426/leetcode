@@ -1,13 +1,4 @@
-from bisect import bisect_left
-from collections import defaultdict
-
 class Solution(object):
-
-    def bsearch(self, nums, find) -> int:
-        i = bisect_left(nums, find)
-        if i != len(nums) and nums[i] == find:
-            return i
-        return -1
 
     def threeSum(self, nums):
         """
@@ -15,35 +6,45 @@ class Solution(object):
         :rtype: List[List[int]]
         """
 
-        klst = defaultdict(int)
-        sumlst = []
+        ndct = {}   # dictionary stores (key, number of occurrences of key)
+        sumlst = [] # return list
 
         # storing the occurrences of numbers in dictionary
         for i in nums:
-            klst[i] += 1
+            if i not in ndct: 
+                ndct[i] = 0
+            ndct[i] += 1
 
-        totlst = list(klst.items())
+        totlst = sorted(list(ndct.keys())) # distinct numbers in order
 
         for i in range(len(totlst)):
-            key, val = totlst[i]
+            key1 = totlst[i]
+            # to indicate use of variable 
+            ndct[key1] -= 1
             
-            for j in range(i+1, len(totlst)):
-                key2, _ = totlst[j]
-                klst[key] -= 1
-                klst[key2] -= 1
-                if klst[-(key + key2)] > 0:
-                    add = sorted([key, key2, -(key + key2)])
-                    if add not in sumlst: 
-                        sumlst.append(add)
-                    
-                klst[key] += 1
-                klst[key2] += 1
+            for j in range(i, len(totlst)):
+                key2 = totlst[j]
+                # for duplicate occurrences of a number
+                if ndct[key2] <= 0: 
+                    continue
+            
+                # to indicate use of variable 
+                ndct[key2] -= 1
+                cmpl = -(key1 + key2) 
+
+                # to prevent repeats in return list
+                if cmpl >= key2 and cmpl in ndct:
+                    if ndct[cmpl] > 0:
+                        sumlst.append([key1, key2, cmpl])
+                
+                # revert to original state after use
+                ndct[key2] += 1
+
+            # revert to original state after use
+            ndct[key1] += 1
                     
         return sumlst 
 
-obj = Solution()
-nums = [-1,0,1,2,-1,-4]
-print(obj.threeSum(nums))
 
 
 
