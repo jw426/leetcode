@@ -3,25 +3,6 @@ from bisect import bisect_left
 
 class Solution(object):
 
-    # function to find the "number" (not index) of the closest value to find
-    # using binary search O(logn)
-    def bsearch_closest(self, nums, find) -> int:
-        i = bisect_left(nums, find)
-
-        # closest value to find is either min or max values in list
-        if i == 0:
-            return nums[i]
-        if i == len(nums):
-            return nums[i-1]
-        
-        
-        # number required for making target is found
-        if nums[i] == find: 
-            return find
-        # not found, compare with left and right values
-        
-        return nums[i-1] if find - nums[i-1] < nums[i] - find else nums[i]
-    
     def threeSumClosest(self, nums, target):
         """
         :type nums: List[int]
@@ -29,17 +10,46 @@ class Solution(object):
         :rtype: int
         """
 
+        # base case 
+        if len(nums) == 3:
+            return sum(nums)
+        
         nums.sort()
-        res = sys.maxsize + target
+        cursum = sum(nums[0:3])
 
-        for i in range(len(nums)):
-            for j in range(i+1, len(nums)-1):
-                need = target - nums[i] - nums[j]
-                closest_val = self.bsearch_closest(nums[j+1:], need)
-                rescmp = closest_val + nums[i] + nums[j]
-                if abs(rescmp - target) < abs(res - target):
-                    res = rescmp
+        for i in range(len(nums) - 2):
+            low, high = i+1, len(nums) - 1
+            
+            lowest = sum(nums[i:i+3])
+            highest = nums[i] + nums[-1] + nums[-2]
+            
+            if target < lowest:
+                if abs(target - cursum) > abs(target - lowest):
+                    cursum = lowest
+                continue
+        
+            if target > highest:
+                if abs(target - cursum) > abs(target - highest):
+                    cursum = highest
+                continue
 
-        return res
-        
-        
+            # disregard repeating 
+            if i > 0 and nums[i] == nums[i-1]:
+                continue
+
+            while low < high:
+                cur = nums[i] + nums[low] + nums[high]
+                if cur > target:
+                    high -= 1
+                elif cur < target:
+                    low += 1
+                # target can be achieved
+                else:
+                    return cur
+                
+                if abs(target - cursum) > abs(target - cur):
+                    cursum = cur
+            
+        return cursum
+
+
