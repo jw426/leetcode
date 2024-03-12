@@ -37,7 +37,9 @@ class Solution(object):
                         low += 1
                     else:
                         res.append(curcomb)
-                        break
+                        low += 1
+                        while low < high and nums[low] == nums[low - 1]:
+                            low +=1 
 
         return curcomb
 
