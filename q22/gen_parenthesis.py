@@ -1,34 +1,21 @@
-class Solution(object):
-    def generateParenthesis(self, n):
-        """
-        :type n: int
-        :rtype: List[str]
-        """
-         
-        # base case
-        if n == 1: 
-            return ["()"]
-        
-        # solve with recursion
-        prev = self.generateParenthesis(n-1)
-        curr = []
-        if not (n % 2):
-            line = ""
-            line2 = ""
-            for _ in range(n/2):
-                line += '('
-                line2 += ')'
-            curr.append((line + line2) * 2)
+class Solution:
+    def generateParenthesis(self, n: int) -> List[str]:
 
+        def genRec(count = 0, s = ''):
+
+            if len(s) > n*2:
+                return 
+
+            if len(s) == n*2 and count == 0:
+                curr.append(s)
+                return
             
-        for i in prev:
-            # append outer
-            curr.append('(' + i + ')')
-            # append beside (left & right)
-            left = '()' + i
-            rght = i + '()'
-            curr.append(rght)
-            if left != rght:
-                curr.append(left)
+            genRec(count + 1, s + '(')
+            if count > 0:
+                genRec(count - 1, s + ')')  
     
-        return set(curr)
+        curr = []
+        genRec()
+        return curr
+        
+    
