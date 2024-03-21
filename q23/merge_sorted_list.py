@@ -16,35 +16,40 @@ class Solution(object):
         head = ListNode(val=-sys.maxsize - 1)
         tail = head 
 
-        while lists:
+        while len(lists):
 
             # removing None values 
-            lists = [list for list in lists if list is not None]
+            lists = [lst for lst in lists if lst is not None]
             min_head = None
+            min_idx = None
             
-            for list in lists:
+            for i in range(len(lists)):
 
+                lst = lists[i]
                 # repeating values (same values)
-                while list and list.val == head.val:
-                    tail.next = list
-                    tail = list
-                    list = list.next
+                while lst and lst.val == head.val:
+                    lists[i] = lst.next
+                    lst.next = None
+                    tail.next = lst
+                    tail = lst
+                    
 
                 # finding new value
                 if not min_head:
-                    min_head = list
+                    min_head = lst
+                    min_idx = i
                     continue
 
                 # new smallest listnode is found
-                if min_head.val > list.val:
-                    min_head = list
+                if min_head.val > lst.val:
+                    min_head = lst
+                    min_idx = i
 
             if min_head: 
+                lists[min_idx] = min_head.next
+                min_head.next = None
                 tail.next = min_head
                 tail = min_head
 
         return head.next
     
-obj = Solution()
-res = obj.mergeKLists(lists = [[1,4,5],[1,3,4],[2,6]])
-print(res)
