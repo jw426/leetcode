@@ -27,12 +27,15 @@ class Solution(object):
 
                 lst = lists[i]
                 # repeating values (same values)
-                while lst and lst.val == head.val:
+                while lst and lst.val == tail.val:
                     lists[i] = lst.next
                     lst.next = None
                     tail.next = lst
                     tail = lst
+                    lst = lists[i]
                     
+                if not lst:
+                    continue
 
                 # finding new value
                 if not min_head:
