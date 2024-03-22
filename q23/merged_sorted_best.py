@@ -10,12 +10,12 @@ class Solution(object):
 
         valdict = defaultdict(int)
         
-        for list in lists:
-            cur = list
+        for lst in lists:
+            cur = lst
             while cur:
                 valdict[cur.val] += 1
-                cur = list.next 
-        
+                cur = cur.next
+    
         head = ListNode()
         tail = head
         for val, cnt in sorted(valdict.items()):
@@ -24,4 +24,6 @@ class Solution(object):
                 tail = tail.next 
 
         return head.next
+
+
 
