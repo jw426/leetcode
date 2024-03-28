@@ -10,16 +10,15 @@ int divide(int dividend, int divisor) {
     }
 
     int quotient = 0;
-    int negative = 0;  // flag for sign of quotient 
-    if ((dividend < 0 && divisor > 0) || dividend > 0 && divisor < 0) negative = 1;
+    int positive = dividend < 0 == divisor < 0;  // flag for sign of quotient 
 
-    int ndividend = dividend == -2147483648 ? 2147483647 : abs(dividend);
-    int ndivisor = abs(divisor);
+    unsigned int ndividend = abs(dividend);
+    unsigned int ndivisor = abs(divisor);
     while (ndividend >= ndivisor) {
         ndividend -= ndivisor;
         quotient++;
     }
 
-    if (negative) return 0-quotient;
-    return quotient;
+    if (positive) return quotient;
+    return 0 - quotient;
 }
